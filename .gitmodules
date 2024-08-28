@@ -1,0 +1,3 @@
+[submodule "lib/osal"]
+	path = lib/osal
+	url = git@gitee.com:kamin_self/osal.git

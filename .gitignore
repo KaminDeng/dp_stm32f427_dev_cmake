@@ -1,0 +1,17 @@
+.run
+.vscode
+.idea
+.DS_Store
+cmake-build-debug
+
+# ozone
+*ozone*
+
+#document
+doc/
+
+# clion
+.idea/
+
+# openocd.cfg
+openocd.cfg

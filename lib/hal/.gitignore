@@ -1,0 +1,16 @@
+# Ignore all files and directories in lib/hal/
+/*
+
+# Except some directories
+!/cmake/
+!/Core/
+!/Drivers/
+!/Middlewares/
+!/src/
+
+# Except some file
+!*.ioc
+!*.s
+!*.ld
+
+!.gitignore

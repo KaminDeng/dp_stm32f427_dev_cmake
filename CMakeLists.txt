@@ -50,8 +50,9 @@ add_executable(${CMAKE_PROJECT_NAME})
 
 # Add STM32CubeMX generated sources
 add_subdirectory(lib/hal/cmake/stm32cubemx)
-add_subdirectory(lib/osal_port)
-add_subdirectory(lib/osal)
+add_subdirectory(lib/dp_osal_port)
+add_subdirectory(lib/dp_osal)
+add_subdirectory(lib/googletest)
 
 # Link directories setup
 target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
@@ -80,6 +81,6 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
 # Add linked libraries
 target_link_libraries(${CMAKE_PROJECT_NAME}
     stm32cubemx
-    osal_lib
-#    osal_port
+    osal
+    gtest
 )

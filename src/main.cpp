@@ -7,15 +7,11 @@
 #include "osal_system.h"
 #include "osal_test_main.h"
 #include "osal_thread.h"
-#include "test_framework.h"
 
 using namespace osal;
-
-extern "C" void setup(void) {}
-
 OSALThread init_thread;
 extern OSALThread osal_test_thread;
-extern "C" [[noreturn]] void loop(void) {
+extern "C" void osal_test_setup(void) {
     OSAL_LOGI("OSAL test case being\n");
     init_thread.start(
         "init_thread",
@@ -23,13 +19,12 @@ extern "C" [[noreturn]] void loop(void) {
             osal_test_main();
             while (!osal_test_thread.isRunning());
             osal_test_thread.join();
-            MemoryStatsPrint();
+            // 打印动态内存分配统计信息
+            // MemoryStatsPrint();
             while (1) {
                 HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
                 OSALSystem::getInstance().sleep_ms(1000);
             }
         },
         nullptr, 0, 2048);
-    OSALSystem::getInstance().StartScheduler();
-    while (1);
 }

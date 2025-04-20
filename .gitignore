@@ -7,9 +7,6 @@ cmake-build-debug
 # ozone
 *ozone*
 
-#document
-doc/
-
 # clion
 .idea/
 

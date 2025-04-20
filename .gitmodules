@@ -1,3 +1,6 @@
-[submodule "lib/osal"]
-	path = lib/osal
-	url = git@gitee.com:kamin_self/osal.git
+[submodule "lib/googletest"]
+	path = lib/googletest
+	url = git@github.com:KaminDeng/googletest_for_cortex_m.git
+[submodule "lib/dp_osal"]
+	path = lib/dp_osal
+	url = git@github.com:KaminDeng/dp_osal.git

@@ -1,20 +1,4 @@
 /* USER CODE BEGIN Header */
-/**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2024 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -26,41 +10,33 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
-
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-extern void setup();
-extern void loop();
 /* USER CODE END 0 */
 
 /**
@@ -71,7 +47,6 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -80,14 +55,12 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
   /* USER CODE END Init */
 
   /* Configure the system clock */
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -98,29 +71,24 @@ int main(void)
   MX_CAN1_Init();
   MX_CAN2_Init();
   /* USER CODE BEGIN 2 */
-  setup();
   /* USER CODE END 2 */
 
   /* Init scheduler */
-//  osKernelInitialize();
+  osKernelInitialize();
 
   /* Call init function for freertos objects (in cmsis_os2.c) */
-//  MX_FREERTOS_Init();
+  MX_FREERTOS_Init();
 
   /* Start scheduler */
-//  osKernelStart();
+  osKernelStart();
 
   /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    loop();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-  }
   /* USER CODE END 3 */
 }
 
@@ -170,7 +138,40 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+#include <sys/time.h>
+// 使用FreeRTOS时钟或HAL时钟源
+#if configUSE_TICKLESS_IDLE == 0
+int _gettimeofday(struct timeval *tv, void *tz) {
+    static uint32_t start_tick = 0;
+    uint32_t now = HAL_GetTick();
 
+    // 初始化起始时间戳
+    if(start_tick == 0) {
+        start_tick = now;
+    }
+
+    // 转换为秒和微秒
+    uint32_t elapsed = now - start_tick;
+    tv->tv_sec = elapsed / 1000;
+    tv->tv_usec = (elapsed % 1000) * 1000;
+
+    return 0;
+}
+#else
+// Tickless模式需使用RTC
+int _gettimeofday(struct timeval *tv, void *tz) {
+    RTC_TimeTypeDef rtc_time;
+    RTC_DateTypeDef rtc_date;
+
+    HAL_RTC_GetTime(&hrtc, &rtc_time, RTC_FORMAT_BIN);
+    HAL_RTC_GetDate(&hrtc, &rtc_date, RTC_FORMAT_BIN);
+
+    tv->tv_sec = rtc_time.Seconds + rtc_time.Minutes*60 + rtc_time.Hours*3600;
+    tv->tv_usec = rtc_time.SubSeconds * (1000000/(hrtc.Init.SynchPrediv+1));
+
+    return 0;
+}
+#endif
 /* USER CODE END 4 */
 
 /**
@@ -180,11 +181,6 @@ void SystemClock_Config(void)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -199,8 +195,6 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

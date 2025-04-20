@@ -17,4 +17,3 @@ foreach (subdir
 endforeach ()
 
 target_link_libraries(osal_port PUBLIC stm32cubemx)
-
